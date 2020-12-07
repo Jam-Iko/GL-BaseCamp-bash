@@ -30,8 +30,10 @@ update_global_float() {
 	dec=${num#*.}
 	if [ $DEC_POINT_COUNT -lt ${#dec} ]; then
 		DEC_POINT_COUNT=${#dec}
+	else
+		DEC_POINT_COUNT=$DEC_POINT_COUNT
 	fi
-	FLOATING=$((FLOATING + 1))
+	FLOATING=1
 }
 
 apply_coefficient() {
@@ -53,9 +55,11 @@ apply_coefficient() {
 
 if [ \( $# -lt 3 \) -o \( $(($# % 2)) -eq 0 \) ]
 then
-   echo "usage: calc number number op [ number op ] ..."
-   echo "use x or '*' for multiplication"
-   exit 1
+    echo "usage (integers): ./calculator.sh number op number [ op number ] ..."
+    echo "usage (float): ./calculator.sh number op number"
+    echo "use x or '*' for multiplication"
+    echo "for float division at least 1 of the operands must be in floating point notation"
+    exit 1
 fi
 for i in "$@"
 do
@@ -70,21 +74,21 @@ if [ $FLOATING -gt 0 ]; then
 	third=$number
 	if [[ $2 = [x] ]]; then
     	DEC_POINT_COUNT=$((DEC_POINT_COUNT + 1 ))
+		ANS=$(($first ${2//x/*} $third ))
+		echo $ANS
+		printf %.${DEC_POINT_COUNT}f "$((10**$DEC_POINT_COUNT * $ANS/10**$DEC_POINT_COUNT))e-${DEC_POINT_COUNT}"
+		echo
+		exit 0
+    elif [[ $2 = [/] ]]; then
+    	printf %.${DEC_POINT_COUNT}f "$((10**$DEC_POINT_COUNT * $first/$third))e-${DEC_POINT_COUNT}"
+    	echo
+    	exit 0
+	else
+		ANS=$(($first $2 $third ))
     fi
-	ANS=$(($first ${2//x/*} $third ))
-	shift 3
-	while [ $# -gt 0 ]
-	do
-	    apply_coefficient $2
-	    second=$number
-	    if [[ $1 = [x] ]]; then
-			DEC_POINT_COUNT=$((DEC_POINT_COUNT + 1 ))
-	    fi
-	    ANS=$((ANS ${1//x/*} $second ))
-	    shift 2
-	done
 	printf %.${DEC_POINT_COUNT}f "$((10**$DEC_POINT_COUNT * $ANS/10**$DEC_POINT_COUNT))e-${DEC_POINT_COUNT}"
 	echo
+	exit 0
 else
 	ANS=$(($1 ${2//x/*} $3))
 	shift 3
