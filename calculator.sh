@@ -75,7 +75,7 @@ if [ $FLOATING -gt 0 ]; then
 	shift 3
 	while [ $# -gt 0 ]
 	do
-	    check $2
+	    apply_coefficient $2
 	    second=$number
 	    if [[ $1 = [x] ]]; then
 			DEC_POINT_COUNT=$((DEC_POINT_COUNT + 1 ))
