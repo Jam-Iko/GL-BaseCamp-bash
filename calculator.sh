@@ -84,6 +84,7 @@ if [ $FLOATING -gt 0 ]; then
 	    shift 2
 	done
 	printf %.${DEC_POINT_COUNT}f "$((10**$DEC_POINT_COUNT * $ANS/10**$DEC_POINT_COUNT))e-${DEC_POINT_COUNT}"
+	echo
 else
 	ANS=$(($1 ${2//x/*} $3))
 	shift 3
