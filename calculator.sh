@@ -75,7 +75,6 @@ if [ $FLOATING -gt 0 ]; then
 	if [[ $2 = [x] ]]; then
     	DEC_POINT_COUNT=$((DEC_POINT_COUNT + 1 ))
 		ANS=$(($first ${2//x/*} $third ))
-		echo $ANS
 		printf %.${DEC_POINT_COUNT}f "$((10**$DEC_POINT_COUNT * $ANS/10**$DEC_POINT_COUNT))e-${DEC_POINT_COUNT}"
 		echo
 		exit 0
